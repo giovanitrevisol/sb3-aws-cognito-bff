@@ -5,27 +5,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Class to configure AWS Cognito as an OAuth 2.0 authorizer with Spring Security.
+ * In this configuration, we specify our OAuth Client.
+ * We also declare that all requests must come from an authenticated user.
+ * Finally, we configure our logout handler.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/auth/login").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutSuccessUrl("/"))
-                .oauth2ResourceServer(oauth2ResourceServer ->
-                        oauth2ResourceServer.jwt(Customizer.withDefaults())
-                )
-                .build();
+        CognitoLogoutHandler cognitoLogoutHandler = new CognitoLogoutHandler();
+
+        http.csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/").permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .oauth2Login(Customizer.withDefaults())
+                .logout(logout -> logout.logoutSuccessHandler(cognitoLogoutHandler));
+        return http.build();
     }
-
-
 }
