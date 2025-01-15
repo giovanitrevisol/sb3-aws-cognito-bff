@@ -16,8 +16,7 @@ public class AuthService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        headers.setBasicAuth("3068elrou8k4slnf80du7ihi72", ""); // Substitua SEU_CLIENT_ID pelo App Client ID
-        headers.setBasicAuth("3068elrou8k4slnf80du7ihi72", "fe3cjdmgob0i5mstqmhrb8ub6ts6q9355enue6s981jb0i5ro5k");
+        headers.setBasicAuth("", "");
 
         String body = "grant_type=password&username=" + username + "&password=" + password;
 

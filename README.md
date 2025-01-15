@@ -2,10 +2,4 @@
 Spring boot 3 application with login AWS Cognito
 
 ## SpringBoot REST APIs using AWS Cognito OAuth2 scopes?
-
-## 1 - Configure AWS Cognito
- - Create a user pool
- - Create an app client
- - Create a domain (optional)
- - create a resource server
- - create a scope for the resource server (optional)
+https://awskarthik82.medium.com/how-to-secure-springboot-rest-apis-using-aws-cognito-oauth2-scopes-a3435001e70d
