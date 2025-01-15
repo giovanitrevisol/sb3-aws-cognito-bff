@@ -1,8 +1,12 @@
+
+server:
+  port: 8080
+
 spring:
   application:
-    name: cognito-sb-demo
+      name: cognito-sb-demo
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_nxp88S3Dy"
+          issuer-uri: https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_nxp88S3Dy
