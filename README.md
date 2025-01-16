@@ -9,9 +9,9 @@ Spring boot 3 application with login AWS Cognito
 - Set name your application
 - Configure options for sign-in: `Email` and `username`
 - click on `Create`
-<br>
+
 ![create-user-pool-cognito.png](documentation/create-user-pool-cognito.png)
-<br>
+
 After creating the user pool, you can see the `App clients` is created automatically. <br>
 In the app clients, you can see the `App client id` and `App client secret`. <br>
 
