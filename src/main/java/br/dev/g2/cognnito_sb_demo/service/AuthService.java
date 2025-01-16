@@ -1,33 +1,43 @@
 package br.dev.g2.cognnito_sb_demo.service;
 
-import org.springframework.http.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AuthFlowType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AuthenticationResultType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.InitiateAuthRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.InitiateAuthResponse;
 
 import java.util.Map;
 
 @Service
 public class AuthService {
 
-    public String getTokenFromCognito(String username, String password) {
-        RestTemplate restTemplate = new RestTemplate();
+    private final CognitoIdentityProviderClient cognitoClient;
 
-        String url = "https://sa-east-1nxp88s3dy.auth.sa-east-1.amazoncognito.com/oauth2/token";
+    @Value("${aws.clientSecret}")
+    private String clientSecret;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth("", "");
 
-        String body = "grant_type=password&username=" + username + "&password=" + password;
+    public AuthService(CognitoIdentityProviderClient cognitoClient) {
+        this.cognitoClient = cognitoClient;
+    }
 
-        HttpEntity<String> request = new HttpEntity<>(body, headers);
+    public AuthenticationResultType login(String username, String password, String clientId) {
 
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
+        String secretHash = CognitoSecretHash.calculateSecretHash(clientId, clientSecret, username);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody().get("id_token").toString();
-        } else {
-            throw new RuntimeException("Falha ao obter o token do Cognito");
-        }
+        InitiateAuthRequest authRequest = InitiateAuthRequest.builder()
+                .authFlow(AuthFlowType.USER_PASSWORD_AUTH)
+                .clientId(clientId)
+                .authParameters(Map.of(
+                        "USERNAME", username,
+                        "PASSWORD", password,
+                        "SECRET_HASH", secretHash
+                ))
+                .build();
+
+        InitiateAuthResponse response = cognitoClient.initiateAuth(authRequest);
+        return response.authenticationResult();
     }
 }

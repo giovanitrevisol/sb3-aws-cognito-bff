@@ -9,4 +9,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_dwJFEAidQ
+          issuer-uri: <issuer-uri>
+
+aws:
+  accessKeyId: <accessKeyId>
+  secretAccessKey: <secretAccessKey>
+  region: sa-east-1
+  clientId: <clientId>
+  clientSecret: <clientSecret>
